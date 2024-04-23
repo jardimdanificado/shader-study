@@ -11,16 +11,12 @@ uniform float u_time;
 
 void main() 
 {
-    mod(4.0,4.0);
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
     st.x *= u_resolution.x/u_resolution.y;
 
     // Draw a box pattern
-    if((mod(gl_FragCoord.x, 8.0) < mod(u_time, 16.0)*(gl_FragCoord.x*(u_resolution.x * mod(u_time, 17.0))) && 
-        mod(gl_FragCoord.y, 8.0) > 4.0) &&
-        (mod(gl_FragCoord.y, 8.0) < mod(u_time, 16.0)*((gl_FragCoord.y/128.0))
-        && mod(gl_FragCoord.x, 8.0) > 4.0)
-       )
+    if(mod(gl_FragCoord.x, 8.0) < mod(u_time, 16.0) && 
+    (mod(gl_FragCoord.y, 8.0) < mod(u_time, 16.0)))
     {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;

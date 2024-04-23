@@ -5,21 +5,32 @@
 precision mediump float;
 #endif
 
+#define PROCESSING_COLOR_SHADER
+
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+uniform float time;
 varying vec2 vTexCoord;
 uniform sampler2D cactiTex;
 
 void main() 
 {
     vec4 color2 = texture2D(cactiTex, vTexCoord);
-    mod(4.0,4.0);
     vec2 st = gl_FragCoord.xy/u_resolution.xy;
     st.x *= u_resolution.x/u_resolution.y;
 
     // Draw a box pattern
-    if (distance(u_mouse,gl_FragCoord.xy) < 5.0 && distance(u_mouse,gl_FragCoord.xy) > 4.0)
+    if((mod(gl_FragCoord.x, 7.0) < mod(time, 8.0) ||
+        mod(gl_FragCoord.y, 7.0) > 4.0) &&
+        (mod(gl_FragCoord.y, 7.0) < mod(time, 8.0) ||
+        mod(gl_FragCoord.x, 7.0) > 4.0)
+       )
+    {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, .0);
+        return;
+    }
+    else if (distance(u_mouse,gl_FragCoord.xy) < 5.0 && distance(u_mouse,gl_FragCoord.xy) > 4.0)
     {
         gl_FragColor = (vec4(0.0, 0.0, 0.0, 1.0));
         return;
