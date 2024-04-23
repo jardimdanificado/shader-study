@@ -22,7 +22,7 @@ void main()
 
     // Draw a box pattern
     if((mod(gl_FragCoord.x, 7.0) < mod(time, 8.0) ||
-        mod(gl_FragCoord.y, 7.0) > 4.0) &&
+        fract(gl_FragCoord.y) > 4.0) &&
         (mod(gl_FragCoord.y, 7.0) < mod(time, 8.0) ||
         mod(gl_FragCoord.x, 7.0) > 4.0)
        )
