@@ -24,7 +24,7 @@ void main()
     if((mod(gl_FragCoord.x, 7.0) < mod(time, 8.0) ||
         fract(gl_FragCoord.y) > 4.0) &&
         (mod(gl_FragCoord.y, 7.0) < mod(time, 8.0) ||
-        mod(gl_FragCoord.x, 7.0) > 4.0)
+        fract(gl_FragCoord.x) > 4.0)
        )
     {
         gl_FragColor = vec4(0.0, 0.0, 0.0, .0);
