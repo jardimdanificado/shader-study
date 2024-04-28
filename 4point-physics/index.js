@@ -1,29 +1,25 @@
-// the vertex shader is called for each vertex
-
-let time = 85;
-let mandel;
-let img;
 let _camera;
 
 let obj = 
 {
-    position: {x: 0, y: -100, z: 0}
+    position: {x: 50, y: -100, z: 50}
 }
 
 let tile = 
-[
-    [0,1],
-    [1,0]
-]
+{
+    a: 0,
+    b: 0,
+    c: 1,
+    d: 0
+}
 
-let progress = 1;
 
 function setup() 
 {
     createCanvas(500, 500, WEBGL);
     _camera = createCamera();
     _camera.setPosition(0, -400, 400);
-    _camera.lookAt(0, 0, 0);
+    _camera.lookAt(50, 0, 50);
 }
 
 function g4point(a,b,c,d)
@@ -33,52 +29,51 @@ function g4point(a,b,c,d)
     {
         if (a > b && a > c && a > d)
         {
-            velocity.y = a - b;
-            velocity.x = a - c;
-            velocity.z = a - d;
+            velocity.x = a;
+            velocity.z = a;
+            velocity.y = (a-c);
         }
         else if (b > a && b > c && b > d)
         {
-            velocity.y = b - a;
-            velocity.x = b - d;
-            velocity.z = b - c;
+            velocity.y = (b-d);
+            velocity.z = b;
+
         }
         else if (c > a && c > b && c > d)
         {
-            velocity.y = c - a;
-            velocity.x = c - d;
-            velocity.z = c - b;
+            velocity.x = -c;
+            velocity.z = -c;
+            velocity.y = (c-a);
         }
         else if (d > a && d > b && d > c)
         {
-            velocity.y = d - b;
-            velocity.x = d - c;
-            velocity.z = d - a;
+            velocity.y = (d-b);
+            velocity.z = -d;
         }
         else if (a == b && c == d)
         {
             if (a > c)
             {
-                velocity.y = a - c;
-                velocity.x = a - c;
+                velocity.y = a;
+                velocity.x = a;
             }
             else if (a < c)
             {
-                velocity.y = c - a;
-                velocity.x = c - a;
+                velocity.y = c;
+                velocity.x = -c;
             }
         }
         else if (a == d && b == c)
         {
             if (a > b)
             {
-                velocity.y = a - b;
-                velocity.x = a - b;
+                velocity.y = a;
+                velocity.z = -a;
             }
             else if (a < b)
             {
-                velocity.y = b - a;
-                velocity.x = b - a;
+                velocity.y = b;
+                velocity.z = b;
             }
         }
     }
@@ -88,10 +83,10 @@ function g4point(a,b,c,d)
 function gravity(obj, tile)
 {
     let velocity = {x: 0, y: 0, z: 0};
-    let a = tile[0][0];
-    let b = tile[0][1];
-    let c = tile[1][0];
-    let d = tile[1][1];
+    let a = tile.a;
+    let b = tile.b;
+    let c = tile.c;
+    let d = tile.d;
     velocity = g4point(a,b,c,d);
     obj.position.x += velocity.x;
     obj.position.y += velocity.y;
@@ -104,21 +99,29 @@ function draw()
     //background(50,150,50);
     color(255);
     orbitControl();
-    beginShape(QUADS);
+    beginShape(TESS);
     
-    // a cube
-    fill('red');
-    stroke('red');
-    vertex(-100, tile[0][0]*100, -100);
+    
+    // b
     fill('blue');
     stroke('blue');
-    vertex( 100, tile[0][1]*100, -100);
+    vertex( 0, tile.b*-100, 100);
+    
+    // a
+    fill('red');
+    stroke('red');
+    vertex(0, tile.a*-100, 0);
+    
+    
+    // d
     fill('green');
     stroke('green');
-    vertex( 100, tile[1][0]*100,  100);
+    vertex( 100, tile.d*-100,  0);
+    
+    // c
     fill('yellow');
     stroke('yellow');
-    vertex(-100, tile[1][1]*100,  100);
+    vertex(100, tile.c*-100,  100);
     
     // Stop drawing the shape.
     endShape();
