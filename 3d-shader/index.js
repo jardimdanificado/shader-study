@@ -17,7 +17,7 @@ let insideRadius = 100;
 
 function preload(){
   // load the shader
-  theShader = loadShader('shaders/3d.vert','shaders/3d.frag');
+  theShader = loadShader('3d.vert','3d.frag');
 }
 
 function setup() {

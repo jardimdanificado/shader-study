@@ -11,7 +11,7 @@ function setup()
   createCanvas(500, 500, WEBGL);
 
   // create and initialize the shader
-  mandel = loadShader("shaders/basic.vert", "shaders/basic.frag");
+  mandel = loadShader("basic.vert", "basic.frag");
   mandel.setUniform("texture", img)
   img = loadImage('a.jpg');
   noStroke();
