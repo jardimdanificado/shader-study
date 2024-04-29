@@ -2,17 +2,16 @@ let _camera;
 
 let obj = 
 {
-    position: {x: 50, y: -60, z: 50}
+    position: {x: 50, y: -100, z: 50}
 }
 
 let tile = 
 {
-    a: 0,
-    b: 0,
-    c: 1,
-    d: 1
+    a: 1,
+    b: 1,
+    c: 0,
+    d: 0
 }
-
 
 function setup() 
 {
@@ -80,42 +79,18 @@ function g4point(a,b,c,d)
     return velocity;
 }
 
-// get the right height of the tile in the object cordinates considering the depth, example: if the object is in the x = .50, and z = .50, in a a=1,b=1,c=0,d=0 the height is .50
-function getHeight(x, z, vertices) {
-    // Extrair os valores de y dos vértices
-    let y0 = vertices.a;
-    let y1 = vertices.b;
-    let y2 = vertices.c;
-    let y3 = vertices.d;
-
-    // Determinar os vértices do quadrado 1x1 no plano xz
-    let v1 = { x: 0, y: y0, z: 0 };
-    let v2 = { x: 1, y: y1, z: 0 };
-    let v3 = { x: 1, y: y2, z: 1 };
-    let v4 = { x: 0, y: y3, z: 1 };
-
-    // Interpolação linear para encontrar a coordenada y no ponto (x, z)
-    let y;
-    if (x >= 0 && x <= 1 && z >= 0 && z <= 1) 
-    {
-        if (z <= 1 - x) {
-            // Ponto está no triângulo inferior esquerdo do quadrado
-            y = y0 + (y3 - y0) * z;
-        } else {
-            // Ponto está no triângulo superior direito do quadrado
-            y = y1 + (y2 - y1) * (1 - x);
-        }
-    } else {
-        console.error("Erro: O ponto está fora do quadrado 1x1 no plano xz.");
-        return null;
-    }
-
-    return y;  // Coordenada y correspondente para o ponto (x, z) no plano xz
+Math.blerp = function (values, x1, y1, x2, y2, x, y) 
+{
+    let q11 = (((x2 - x) * (y2 - y)) / ((x2 - x1) * (y2 - y1))) * values[x1][y1]
+    let q21 = (((x - x1) * (y2 - y)) / ((x2 - x1) * (y2 - y1))) * values[x2][y1]
+    let q12 = (((x2 - x) * (y - y1)) / ((x2 - x1) * (y2 - y1))) * values[x1][y2]
+    let q22 = (((x - x1) * (y - y1)) / ((x2 - x1) * (y2 - y1))) * values[x2][y2]
+    return q11 + q21 + q12 + q22
 }
 
 function gravity(obj, tile)
 {
-    if (obj.position.y >= 0)
+    if (obj.position.y >= 0 || obj.position.y < -100 || obj.position.x >= 100 || obj.position.x <= 0 || obj.position.z >= 100 || obj.position.z <= 0)
     {
         return;
     }
@@ -126,8 +101,13 @@ function gravity(obj, tile)
     let c = tile.c;
     let d = tile.d;
     //get the right height of the tile in the object cordinates
-    let position;
-
+    let position = Math.blerp([[a,b],[c,d]], 0, 0, 1, 1, obj.position.x, obj.position.z);
+    console.log(position, obj.position.y)
+    if (obj.position.y <= (position))
+    {
+        obj.position.y += 1;
+        return;
+    }
 
     velocity = g4point(a,b,c,d);
     obj.position.x += velocity.x;
@@ -174,6 +154,6 @@ function draw()
     translate(obj.position.x, obj.position.y, obj.position.z);
     fill('white');
     stroke('black');
-    box(10,10,10);
+    sphere(10,10,10);
     pop();
 }
